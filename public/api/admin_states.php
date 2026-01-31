@@ -2,9 +2,9 @@
 require_once "../includes/db.php";
 require_once "../includes/auth.php";
 
-require_login(); // user must be logged in ❗
+require_login(); // user must be logged in 
 
-// 🚨 VULNERABILITY: trusting user-controlled ID
+// trusting user-controlled ID
 $user_id = $_GET['user_id'];
 
 $stmt = $pdo->prepare("

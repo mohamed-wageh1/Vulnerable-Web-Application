@@ -1,0 +1,4 @@
+# Deny access to includes (defense example)
+<Directory "/includes">
+    Deny from all
+</Directory>
