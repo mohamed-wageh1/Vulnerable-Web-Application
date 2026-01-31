@@ -1,0 +1,29 @@
+<?php
+$pageTitle = "Messages";
+require_once "../includes/header.php";
+require_once "../includes/db.php";
+
+$user_id = $_SESSION['user_id'] ?? 1; // INTENTIONAL
+if (isset($_POST['send'])) {
+    $content = $_POST['message'];
+
+    $query = "INSERT INTO messages (user_id, content) VALUES ($user_id, '$content')";
+    mysqli_query($conn, $query);
+
+    header("Location: messages.php");
+    exit;
+}
+?>
+
+<link rel="stylesheet" href="../assets/css/style.css">
+
+<h1 class="topbar">Messages</h1>
+
+<form method="POST" class="msg">
+    <textarea name="message" placeholder="Type your message"></textarea><br>
+    <button type="submit" name="send">Send</button>
+</form>
+
+<hr>
+<?php require_once "../includes/footer.php"; ?>
+
