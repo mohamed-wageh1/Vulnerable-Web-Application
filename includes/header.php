@@ -2,7 +2,11 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 
+$pageTitle = $pageTitle ?? "Dashboard";
 $pageTitle = $pageTitle ?? "Dashboard";
 ?>
 <!DOCTYPE html>
@@ -21,9 +25,9 @@ $pageTitle = $pageTitle ?? "Dashboard";
         </div>
 
         <div class="nav-actions">
-            <?php if (isset($_SESSION['user'])): ?>
+            <?php if (isset($_SESSION['user_id'])): ?>
                 <span class="nav-user">
-                    <?= htmlspecialchars($_SESSION['user']['username'] ?? 'user') ?>
+                    <?= htmlspecialchars($_SESSION['username'] ?? 'user') ?>
                 </span>
                 <a href="/logout.php" class="logout-link">Logout</a>
             <?php endif; ?>

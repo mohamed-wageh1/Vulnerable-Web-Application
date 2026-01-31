@@ -1,17 +1,21 @@
 <?php
 session_start();
 
-// INTENTIONAL BROKEN ACCESS CONTROL
-if (!isset($_SESSION['user_id'])) {
-    // should block access – but we allow it
+if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'admin') {
+    http_response_code(403);
+    die("Access denied: Admins only");
 }
-if (isset($_GET['page'])) {
+
+$role = $_SESSION['role'];
+$user_id = $_SESSION['user_id'];
+
+$allowed_pages = ['dashboard.php', 'users.php', 'uploads.php', 'messages.php', 'logs.php'];
+if (isset($_GET['page']) && in_array($_GET['page'], $allowed_pages)) {
     include($_GET['page']);
     exit;
 }
-$role = $_SESSION['role'] ?? 'guest';
-$user_id = $_SESSION['user_id'] ?? 0;
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

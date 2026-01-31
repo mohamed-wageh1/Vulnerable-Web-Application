@@ -2,23 +2,39 @@
 session_start();
 $pageTitle = "File Upload";
 require_once "../../includes/header.php";
-// BROKEN ACCESS CONTROL (INTENTIONAL)
-if (!isset($_SESSION['user_id'])) {
-    // bypass allowed
+
+if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'admin') {
+    http_response_code(403);
+    die("Access denied: Admins only");
+}
+
+$allowed_pages = ['dashboard.php', 'users.php', 'messages.php'];
+if (isset($_GET['page']) && in_array($_GET['page'], $allowed_pages)) {
+    include($_GET['page']);
 }
 
 $upload_dir = realpath(__DIR__ . "/../../uploads/files/") . "/";
-// echo "<pre>UPLOAD DIR: $upload_dir</pre>";
 
-if (isset($_POST['upload'])) {
-    $filename = $_FILES['file']['name'];
-    $tmp_name = $_FILES['file']['tmp_name'];
+if (isset($_POST['upload']) && isset($_FILES['file'])) {
+    $file = $_FILES['file'];
 
-    move_uploaded_file($tmp_name, $upload_dir . $filename);
+    $allowed_ext = ['pdf', 'png', 'jpg', 'jpeg', 'docx'];
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
-    $message = "File uploaded successfully!";
+    if (!in_array($ext, $allowed_ext)) {
+        $message = "File type not allowed!";
+    } else {
+        $safe_name = uniqid('file_', true) . '.' . $ext;
+
+        if (move_uploaded_file($file['tmp_name'], $upload_dir . $safe_name)) {
+            $message = "File uploaded successfully!";
+        } else {
+            $message = "Error uploading file.";
+        }
+    }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

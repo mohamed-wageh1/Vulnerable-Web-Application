@@ -15,9 +15,20 @@ require_once "../../includes/header.php";
     </tr>
   </thead>
   <tbody>
-    <!-- Filled by admin.js -->
   </tbody>
 </table>
 <script src="../assets/js/admin.js"></script>
 
 <?php require_once "../../includes/footer.php"; ?>
+<script>
+const csrfToken = '<?= $_SESSION['csrf_token'] ?>';
+
+function updateRole(userId, newRole) {
+    fetch('update_role.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `user_id=${userId}&role=${newRole}&csrf_token=${csrfToken}`
+    }).then(res => res.text())
+      .then(console.log);
+}
+</script>

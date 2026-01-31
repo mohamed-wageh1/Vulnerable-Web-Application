@@ -3,12 +3,19 @@ $pageTitle = "Messages";
 require_once "../includes/header.php";
 require_once "../includes/db.php";
 
-$user_id = $_SESSION['user_id'] ?? 1; // INTENTIONAL
-if (isset($_POST['send'])) {
-    $content = $_POST['message'];
+$user_id = $_SESSION['user_id'] ?? 1;
 
-    $query = "INSERT INTO messages (user_id, content) VALUES ($user_id, '$content')";
-    mysqli_query($conn, $query);
+if (isset($_POST['send'])) {
+    $content = trim($_POST['message']);
+
+    if ($content !== '') {
+        if (strlen($content) > 1000) {
+            $content = substr($content, 0, 1000);
+        }
+
+        $stmt = $pdo->prepare("INSERT INTO messages (user_id, content) VALUES (?, ?)");
+        $stmt->execute([$user_id, $content]);
+    }
 
     header("Location: messages.php");
     exit;
