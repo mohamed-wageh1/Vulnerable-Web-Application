@@ -24,6 +24,3 @@ This application intentionally contains vulnerabilities such as:
 
 ## Usage
 For local testing only (XAMPP / Apache / MySQL).
-
-## Disclaimer
-⚠️ This project is for educational purposes only. Do NOT deploy in production.
